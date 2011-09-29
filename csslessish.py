@@ -10,7 +10,7 @@ import sys, os
 class strip_css_variables_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
-		reload_modules()
+		#reload_modules()
 		cssvariables.apply(view, edit)
 		cssnesting.apply(view, edit)
 		print "Applied css variables and nesting for save"
@@ -18,7 +18,7 @@ class strip_css_variables_command(sublime_plugin.TextCommand):
 class restore_css_variables_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
-		reload_modules()
+		#reload_modules()
 		cssnesting.remove(view, edit)
 		cssvariables.remove(view, edit)
 		
@@ -69,9 +69,13 @@ def process(view, type):
 		if not view.find("@\w+", 0):
 			return
 		if type=='restore':
-			callback = lambda: delayed_restore(view)
-			sublime.set_timeout(callback, 200)
-			#view.run_command('restore_css_variables')
+			settings = sublime.load_settings('css less-ish.sublime-settings')
+			restore_delay = int(settings.get('restore_delay', 300))
+			if restore_delay != 0:
+				callback = lambda: delayed_restore(view)
+				sublime.set_timeout(callback, restore_delay)
+			else:
+				view.run_command('restore_css_variables')
 		else:
 			view.run_command('strip_css_variables')
 
