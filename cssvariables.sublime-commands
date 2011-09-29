@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "CSS Variables: Strip CSS Variables",
+        "command": "strip_css_variables"
+    },
+    {
+        "caption": "CSS Variables: Restore CSS Variables",
+        "command": "restore_css_variables"
+    }
+]
