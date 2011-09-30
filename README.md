@@ -1,9 +1,8 @@
 # CSS Less(ish)
 
 This is a [SublimeText 2](http://www.sublimetext.com/2) plugin that facilitates a very very stripped down version of the functionality in LESS csss. ([http://lesscss.org](http://lesscss.org))
-You can [read more](https://github.com/kizza/CSS-Less-ish/wiki) on the github wiki.
 
-## CSS Variables
+### CSS Variables
 
 You can store variables within comments using the "@" symbol, then use them anywhere within your css.
 
@@ -15,7 +14,7 @@ produces
     /* @link = "#FF0000" */
     a { color: #FF0000; }
 
-## CSS Nesting
+### CSS Nesting
 
 You can nest styles within other blocks to append that selector to all children.
 
@@ -29,3 +28,4 @@ produces
     .header h1 { color:blue }
     .header a { color:blue }
 
+You can [read more on the wiki](https://github.com/kizza/CSS-Less-ish/wiki).
