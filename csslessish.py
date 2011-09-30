@@ -11,35 +11,49 @@ class css_less_ish_compile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
 		#reload_modules()
-		cssvariables.apply(view, edit)
-		cssnesting.apply(view, edit)
-		print "Applied css variables and nesting for save"
+		highlights = cssvariables.apply(view, edit)
+		highlights+= cssnesting.apply(view, edit)
+		#highlight(view, highlights)
+		print "CSS Less(ish) Compiled"
 
 class css_less_ish_decompile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
 		#reload_modules()
-		cssnesting.remove(view, edit)
-		cssvariables.remove(view, edit)
-		print "Restored css variables and nesting for editing"
+		highlights = cssnesting.remove(view, edit)
+		highlights+= cssvariables.remove(view, edit)
+		highlight(view, highlights)
+		print "CSS Less(ish) Decompiled"
 
 #
 # Helpers
 #
 
+def highlight(view, regions):
+	highlight_delay = get_setting('highlight_delay')
+	if highlight_delay > 0:
+		view.add_regions('css-less-ish', regions, 'entity.name.class', sublime.DRAW_OUTLINED)
+		callback = lambda: unhighlight(view)
+		sublime.set_timeout(callback, highlight_delay)
+
+def unhighlight(view):
+	view.erase_regions('css-less-ish')
+
+def get_setting(name):
+	settings = sublime.load_settings('csslessish.sublime-settings')
+	return int(settings.get(name, 500))
+	
 def reload_modules():
 	load_module('cssvariables')
 	load_module('cssnesting')
 
-# reload module - borrowed from sublimelint
+# reload module (borrowed from sublimelint for ease when debugging)
 basedir = os.getcwd()
-modpath = 'modules'
 def load_module(name):
-	fullmod = '%s.%s' % (modpath, name)
+	path = 'modules.' + name
 	os.chdir(basedir)
-	__import__(fullmod)
-	sys.modules[fullmod] = reload(sys.modules[fullmod])
-
+	__import__(path)
+	sys.modules[path] = reload(sys.modules[path])
 
 #
 # Hooks
@@ -59,15 +73,15 @@ def process(view, type):
 		if not view.find("@\w+", 0) and not view.find("\w+\s*\[", 0):
 			return
 		if type=='restore':
-			settings = sublime.load_settings('csslessish.sublime-settings')
-			restore_delay = int(settings.get('restore_delay', 300))
-			if restore_delay != 0:
-				callback = lambda: delayed_restore(view)
+			restore_delay = get_setting('restore_delay')
+			if restore_delay > 0:
+				callback = lambda: restore(view)
 				sublime.set_timeout(callback, restore_delay)
 			else:
-				view.run_command('css_less_ish_decompile')
+				restore(view)
 		else:
 			view.run_command('css_less_ish_compile')
 
-def delayed_restore(view):
+def restore(view):
 	view.run_command('css_less_ish_decompile')
+

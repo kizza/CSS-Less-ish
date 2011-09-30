@@ -1,7 +1,4 @@
 import sublime
-import pprint
-
-region_cache_name = "Variables"
 
 #
 # Primary functions
@@ -10,15 +7,19 @@ region_cache_name = "Variables"
 def apply(view, edit):
 	remove_region_cache(view, edit)
 	trim_entire_content(view, edit)
-	append_region_cache(view, edit)
+	highlights = append_region_cache(view, edit)
+	return highlights
 
 def remove(view, edit):
-	apply_region_cache(view, edit)
+	highlights = apply_region_cache(view, edit)
 	remove_region_cache(view, edit)
+	return highlights
 
 #
 # Content functions
 #
+
+region_cache_name = "Variables"
 
 # Returns dictionary of variables a.  Finds a match of _@varname = "value"_ rather than looking specifically within comments (ie assumes variable names DONT have = usually)
 def get_css_variables_dict(view):
@@ -54,9 +55,6 @@ def trim_entire_content(view, edit):
 			view.replace(edit, sublime.Region(line_region.a - 1, line_region.b), '')
 		else:	
 			break;
-
-def var_dump(val):
-	pprint.pprint(val)
 
 #
 # Region cache functions
@@ -96,9 +94,6 @@ def append_region_cache(view, edit):
 		else:
 			offset+=1
 		match = view.find("@(\w|-)+", offset)	# go again
-	# Highlight changes	
-	colour = 'comment' # 'variable', 'string', 'constant', 'comment', 'keyword', 'invalid'
-	view.add_regions("css-variables", highlight, colour, sublime.DRAW_EMPTY)	# sublime.DRAW_OUTLINED, sublime.DRAW_EMPTY, sublime.DRAW_EMPTY_AS_OVERWRITE
 	# Compile the output	
 	output = []
 	for varname in variables:
@@ -109,6 +104,7 @@ def append_region_cache(view, edit):
 		cache+= '.'.join(output)
 		cache+= " */"
 		view.insert(edit, view.size(), "\n\n"+cache)
+	return highlight
 
 # Returns cache regions as array[varname] = [ [n,n], [n,n] ]
 def parse_region_cache(view):
@@ -133,9 +129,9 @@ def parse_region_cache(view):
 
 # Uses parsed region cache to re-apply the variable names within the content
 def apply_region_cache(view, edit):
-	view.erase_regions("css-variables")
 	data = {}		# assoc array with key 'a' as position index - storing 'varname' and related 'b' value
 	ordering = []	# ordered array by a region's 'a' index
+	highlights = []
 	parsed = parse_region_cache(view)
 	if parsed:
 		# Create data and ordering objects
@@ -148,18 +144,15 @@ def apply_region_cache(view, edit):
 		for a in reversed(ordering):
 			b = data[a]['b']
 			varname = data[a]['varname']
-			view.replace(edit, sublime.Region(a, b), '@'+varname)	
-
-#
-# Highlight functions
-#
-# def highlight_variables(view):
-# 	docblock = get_first_comment(view)
-# 	regions = view.find_all('@\w+', docblock.b)
-# 	view.add_regions("css-variables", regions, 'comment', sublime.DRAW_EMPTY)
-# 	callback = lambda: delayed_restore(view)
-# 	sublime.set_timeout(callback, 1000)
-
+			view.replace(edit, sublime.Region(a, b), '@'+varname)
+		# highlight from top to bottom - accounting for 'shifting' regions during above replacement
+		diff = 0	
+		for a in ordering:
+			b = data[a]['b']
+			varname = data[a]['varname']
+			highlights.append(sublime.Region(diff + a, diff + a + len('@'+varname)))	
+			diff+= len('@'+varname) - (b-a)
+	return highlights
 
 
 
