@@ -55,11 +55,11 @@ class cssvariables_plugin(sublime_plugin.EventListener):
 
 def process(view, type):
 	if view.file_name().endswith('.css'):
-		# Only process if there are variables
-		if not view.find("@\w+", 0):
+		# Only process if there are variables or nestings
+		if not view.find("@\w+", 0) and not view.find("\w+\s*\[", 0):
 			return
 		if type=='restore':
-			settings = sublime.load_settings('css less-ish.sublime-settings')
+			settings = sublime.load_settings('csslessish.sublime-settings')
 			restore_delay = int(settings.get('restore_delay', 300))
 			if restore_delay != 0:
 				callback = lambda: delayed_restore(view)
