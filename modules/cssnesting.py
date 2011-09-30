@@ -1,5 +1,4 @@
-import sublime
-import re
+import sublime, re
 
 #
 # Primary functions
@@ -40,16 +39,15 @@ def append_selector_to_groupings(view, edit):
 		selector = text[0:text.find('[')]
 		contents = text[text.find('['):len(text)]
 		# put group selector on each sub selector
-		contents = re.sub('('+classname + ')(\s+\{(.|\n)*?\})', selector.strip() +' \\1\\3', contents)
+		contents = re.sub('('+classname + ')(\s*?\{(.|\n)*?\})', selector.strip() +' \\1\\3', contents)
 		# replace entire selection with fixed bit
 		view.replace(edit, sublime.Region(region.a, region.b), selector + contents)
 
 # Undoes the above function
 def strip_selector_from_groupings(view, edit):
 	matches = get_groups_regions(view)
-	matches = reversed(matches)
 	highlights = []
-	for region in (matches):
+	for region in reversed(matches):
 		# Get the text
 		text = view.substr(region)
 		text = text.rstrip()
@@ -61,7 +59,8 @@ def strip_selector_from_groupings(view, edit):
 		# replace entire selection with fixed bit
 		view.replace(edit, sublime.Region(region.a, region.b), selector + contents)
 		# show notification of affected areas
-		highlights.append( sublime.Region(region.a, region.a + len(selector) - 1) )
+		#highlights.append( sublime.Region(region.a, region.a + len(selector) - 1) )
+	# highlight from top to bottom - accounting for 'shifting' regions during above replacement
 	return highlights
 
 # This comments out "classname [" and closing "]" groupings (so they don't ruin the css for production)
@@ -99,6 +98,3 @@ def uncomment_out_groupings(view, edit):
 	for region in (matches):
 		text = view.substr(region)
 		view.replace(edit, region, ']')
-
-
-

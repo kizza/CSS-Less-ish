@@ -1,7 +1,5 @@
-import sublime, sublime_plugin
-from modules import cssvariables
-from modules import cssnesting
-import sys, os
+import sys, os, sublime, sublime_plugin
+from modules import cssvariables, cssnesting
 
 #
 # Text Commands
@@ -11,17 +9,16 @@ class css_less_ish_compile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
 		#reload_modules()
-		highlights = cssvariables.apply(view, edit)
-		highlights+= cssnesting.apply(view, edit)
-		#highlight(view, highlights)
+		cssvariables.apply(view, edit)
+		cssnesting.apply(view, edit)
 		print "CSS Less(ish) Compiled"
 
 class css_less_ish_decompile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
 		#reload_modules()
-		highlights = cssnesting.remove(view, edit)
-		highlights+= cssvariables.remove(view, edit)
+		cssnesting.remove(view, edit)
+		highlights = cssvariables.remove(view, edit)
 		highlight(view, highlights)
 		print "CSS Less(ish) Decompiled"
 
@@ -84,4 +81,3 @@ def process(view, type):
 
 def restore(view):
 	view.run_command('css_less_ish_decompile')
-

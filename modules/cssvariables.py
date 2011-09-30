@@ -153,6 +153,3 @@ def apply_region_cache(view, edit):
 			highlights.append(sublime.Region(diff + a, diff + a + len('@'+varname)))	
 			diff+= len('@'+varname) - (b-a)
 	return highlights
-
-
-
