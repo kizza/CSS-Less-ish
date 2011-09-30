@@ -1,6 +1,6 @@
 # CSS Less(ish)
 
-This is a [SublimeText 2](http://www.sublimetext.com/2) plugin that facilitates a very very stripped down version of the functionality in LESS csss. ([http://lesscss.org](http://lesscss.org))
+This is a [SublimeText 2](http://www.sublimetext.com/2) plugin that facilitates a very very stripped down version of the functionality in LESS css. ([http://lesscss.org](http://lesscss.org))
 
 ### CSS Variables
 
@@ -27,5 +27,7 @@ produces
 
     .header h1 { color:blue }
     .header a { color:blue }
+
+### Read More
 
 You can [read more on the wiki](https://github.com/kizza/CSS-Less-ish/wiki).
