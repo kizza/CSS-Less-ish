@@ -1,10 +1,10 @@
 [
     {
-        "caption": "CSS Variables: Strip CSS Variables",
-        "command": "strip_css_variables"
+        "caption": "CSS Less-ish: Compile",
+        "command": "css_less_ish_compile"
     },
     {
-        "caption": "CSS Variables: Restore CSS Variables",
-        "command": "restore_css_variables"
+        "caption": "CSS Less-ish: Decompile",
+        "command": "css_less_ish_decompile"
     }
 ]
