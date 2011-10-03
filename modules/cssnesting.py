@@ -17,7 +17,8 @@ def highlights(view):
 	highlights = []
 	for region in matches:
 		selector, contents = get_group_region_parts( view.substr(region) )
-		highlights.append(sublime.Region(region.a, region.a + len(selector) - 1)) # add selector to highlights
+		stripped_selector, left_gap_size = group_title_left_gap(view, selector)
+		highlights.append(sublime.Region(left_gap_size + region.a, left_gap_size + region.a + len(stripped_selector) - 1)) # add selector to highlights
 		highlights.append(sublime.Region(region.b - 1, region.b)) # add close braket to highlights
 	return highlights
 
@@ -27,9 +28,15 @@ def highlights(view):
 
 classname = '(\w|#|\.|:| |-|,|\*|\+|\"|\'|\=|\[|\]|>)+'
 
+def group_title_left_gap(view, selector):
+	tab_size = int(view.settings().get('tab_size', 8))
+	stripped_selector = selector.expandtabs(tab_size).lstrip()
+	left_gap_size = len(selector) - len(stripped_selector)
+	return stripped_selector, left_gap_size
+
 # returns group selector and [...] as regions array
 def get_groups_regions(view):
-	return view.find_all(''+ classname +'\s+?\[(.|\n)*?\}\s+\]')
+	return view.find_all('^( |\t)*'+ classname +'\s+?\[(.|\n)*?\}\s+\]')
 
 # splits entire group region into selector and rule contents
 def get_group_region_parts(text):
@@ -68,11 +75,13 @@ def strip_selector_from_groupings(view, edit):
 # This comments out "classname [" and closing "]" groupings (so they don't ruin the css for production)
 def comment_out_groupings(view, edit):
 	# openings...
-	matches = view.find_all(''+ classname +'\s+?\[')
+	matches = view.find_all('^( |\t)*'+ classname +'\s*\[')
 	matches = reversed(matches)
 	for region in (matches):
 		text = view.substr(region)
-		view.replace(edit, region, '/*' + text + '*/')
+		stripped_text, left_gap_size = group_title_left_gap(view, text) # account for match including left padding
+		newregion = sublime.Region(region.a + left_gap_size, region.b)
+		view.replace(edit, newregion, '/*' + stripped_text + '*/')
 	# closings...
 	matches = view.find_all('^( |\t)*\]')
 	matches = reversed(matches)
