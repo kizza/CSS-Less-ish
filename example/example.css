@@ -1,0 +1,56 @@
+/*
+* This is an example of two features @variables within css, and css nesting.
+* Below are some examples of variables...
+*
+* @link-colour = '#0000FF'
+* @background="#EEE"
+* @typography = "font-family:arial, serif; font-size:100%; "
+* @corners='border-radius: 10px; -webkit-border-radius: 10px; -mox-border-radius: 10px;'
+*/
+
+	/* Structure */
+	body {
+		text-align: center;
+		@typography
+	}
+
+	#content {
+		margin: 40px auto;
+		text-align: left;
+		width: 800px;
+	}
+
+	/* Default styles - with an inline quote here, @border-color = '#CCC' */
+	.box {
+		background: @background;
+		border: solid 1px @border-color;
+		margin: 40px 0;
+		padding: 10px 20px;
+		@corners
+	}
+
+	h1 {
+		font-size: 160%;
+		@font
+	}
+
+	a {
+		color: @link-colour;
+	}
+
+	/* Two examples styles using nestings (nb. square brackets) */
+	#bottom [
+
+		h1 {
+			color: red;
+		}
+		a {
+			color: green;
+		}
+
+	]
+
+	#bottom .box [
+		p {font-size:12px;}
+	]
+

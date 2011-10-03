@@ -7,13 +7,14 @@ import sublime
 def apply(view, edit):
 	remove_region_cache(view, edit)
 	trim_entire_content(view, edit)
-	highlights = append_region_cache(view, edit)
-	return highlights
+	append_region_cache(view, edit)
 
 def remove(view, edit):
-	highlights = apply_region_cache(view, edit)
+	apply_region_cache(view, edit)
 	remove_region_cache(view, edit)
-	return highlights
+
+def highlights(view):
+	return view.find_all("@(\w|-)+")
 
 #
 # Content functions
@@ -110,7 +111,7 @@ def append_region_cache(view, edit):
 def parse_region_cache(view):
 	region = get_region_cache(view)
 	if not region:
-		print "No region cache found"
+		#print "No region cache found"
 		return
 	cache = view.substr( get_region_cache(view) )
 	cache = cache.replace('/* '+region_cache_name+':', '').replace(' */', '')
@@ -131,7 +132,6 @@ def parse_region_cache(view):
 def apply_region_cache(view, edit):
 	data = {}		# assoc array with key 'a' as position index - storing 'varname' and related 'b' value
 	ordering = []	# ordered array by a region's 'a' index
-	highlights = []
 	parsed = parse_region_cache(view)
 	if parsed:
 		# Create data and ordering objects
@@ -145,11 +145,10 @@ def apply_region_cache(view, edit):
 			b = data[a]['b']
 			varname = data[a]['varname']
 			view.replace(edit, sublime.Region(a, b), '@'+varname)
-		# highlight from top to bottom - accounting for 'shifting' regions during above replacement
-		diff = 0	
-		for a in ordering:
-			b = data[a]['b']
-			varname = data[a]['varname']
-			highlights.append(sublime.Region(diff + a, diff + a + len('@'+varname)))	
-			diff+= len('@'+varname) - (b-a)
-	return highlights
+		# # highlight from top to bottom - accounting for 'shifting' regions during above replacement
+		# diff = 0	
+		# for a in ordering:
+		# 	b = data[a]['b']
+		# 	varname = data[a]['varname']
+		# 	highlights.append(sublime.Region(diff + a, diff + a + len('@'+varname)))	
+		# 	diff+= len('@'+varname) - (b-a)

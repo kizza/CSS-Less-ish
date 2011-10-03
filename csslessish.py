@@ -18,28 +18,47 @@ class css_less_ish_decompile_command(sublime_plugin.TextCommand):
 		view = self.view
 		#reload_modules()
 		cssnesting.remove(view, edit)
-		highlights = cssvariables.remove(view, edit)
-		highlight(view, highlights)
+		cssvariables.remove(view, edit)
+		highlight(view)
 		print "CSS Less(ish) Decompiled"
 
 #
 # Helpers
 #
 
-def highlight(view, regions):
-	highlight_delay = get_setting('highlight_delay')
-	if highlight_delay > 0:
-		view.add_regions('css-less-ish', regions, 'entity.name.class', sublime.DRAW_OUTLINED)
+def highlight(view):
+	highlight_delay = get_setting('highlight_delay', int)
+	if highlight_delay > 0:		
+		highlight_module(view, 'variables', cssvariables.highlights(view))
+		highlight_module(view, 'nesting', cssnesting.highlights(view))
 		callback = lambda: unhighlight(view)
 		sublime.set_timeout(callback, highlight_delay)
 
-def unhighlight(view):
-	view.erase_regions('css-less-ish')
+def highlight_module(view, name, regions):
+	colour = get_setting(name + '_highlight_scope', str)
+	outline = get_setting(name + '_highlight_outline', bool)
+	view.add_regions('css-less-ish-'+name, regions, colour, sublime.DRAW_OUTLINED if outline else sublime.DRAW_EMPTY)
 
-def get_setting(name):
+def unhighlight(view):
+	view.erase_regions('css-less-ish-variables')
+	view.erase_regions('css-less-ish-nesting')
+
+def get_setting(name, typeof=str):
 	settings = sublime.load_settings('csslessish.sublime-settings')
-	return int(settings.get(name, 500))
-	
+	setting = settings.get(name)
+	if setting:
+		if typeof == str:
+			return setting
+		if typeof == bool:
+			return setting == True
+		elif typeof == int:
+			return int(settings.get(name, 500))
+	else:
+		if typeof == str:
+			return ''
+		else:
+			return None
+
 def reload_modules():
 	load_module('cssvariables')
 	load_module('cssnesting')
@@ -70,7 +89,7 @@ def process(view, type):
 		if not view.find("@\w+", 0) and not view.find("\w+\s*\[", 0):
 			return
 		if type=='restore':
-			restore_delay = get_setting('restore_delay')
+			restore_delay = get_setting('restore_delay', int)
 			if restore_delay > 0:
 				callback = lambda: restore(view)
 				sublime.set_timeout(callback, restore_delay)
