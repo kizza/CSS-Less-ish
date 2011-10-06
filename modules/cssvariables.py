@@ -1,4 +1,5 @@
 import sublime
+import re
 
 #
 # Primary functions
@@ -24,31 +25,58 @@ region_cache_name = "Variables"
 
 # Returns dictionary of variables a.  Finds a match of _@varname = "value"_ rather than looking specifically within comments (ie assumes variable names DONT have = usually)
 def get_css_variables_dict(view):
+	# str_hex = '7EBB43'
+	# str_hex = '5CBB00'
+	# #str_hex = 'ff0000'
+	# #str_hex = '111111'
+	# print str_hex
+	# print 'lighten is '+ colour.lighten(str_hex, '50%')
+	# print 'darken is '+ colour.darken(str_hex, '50%')
+	# print 'saturate is '+ colour.saturate(str_hex, '50%')
+	# print 'desaturate is '+ colour.desaturate(str_hex, '50%')
+
 	# match all @var = "value", or @var='value' or @var-name = 'value'
-	matches = view.find_all("@(\w|-)+\s?+=\s?+(\"|\')[^(\"|\')]+(\"|\')",0) 
+	#matches = view.find_all("@(\w|-)+\s?+=\s?+(\"|\')[^(\"|\')]+(\"|\')",0) # this one only looks for quote marks
+	value = r"'|\"|#|\w|\(|\)|@|,| |%|\.|-|:|;" # variable "value" match
+	matches = view.find_all("@(\w|-)+\s?+=\s?+("+value+")+",0) 
 	d = {}
 	#print view.substr(matches)
 	for match in matches:
 		# grab the actual text matched @var = "val" and split up
 		text = view.substr(match)
-		varname ,value = text.split("=")
+		varname,value = text.split("=")
 		# format variable name text
 		varname = varname.replace('@', '').strip()	
 		# format value text
 		value = value.replace('\"', '').replace("\'", '').strip()
 		# add to dictionary
 		d[varname] = value
+	# calculate values
+	for varname in d:
+		value = d[varname]
+		if value.find('@')>=0 or value.find('(')>=0:
+			d[varname] = calculate_value(value, d)
 	return d
+
+def calculate_value(value, d):
+	# Substitute in variables
+	for varname in d:
+		if varname in value:
+			value = value.replace('@'+varname, d[varname])
+	# look for function
+	match = re.search(r'(\w+)\s*?\((.*?)\s*?,\s*?(.*)\)', value)
+	if match:
+		func = match.group(1)
+		var1 = match.group(2)
+		var2 = match.group(3)
+		if func in ('lighten', 'darken', 'saturate', 'desaturate'):
+			value = eval('colour.'+ func + '("' + var1 + '","' + var2 + '")')
+	return value
 
 def get_first_comment(view):
 	return view.find(r"\/\*+(\*|\w|\W)*?\*\/",0)  # better
 
-def get_content(view):
-	return view.substr(sublime.Region(0, view.size())).encode('utf-8')
-
 def trim_entire_content(view, edit):
-	#text = get_content(view).rstrip()
-	#view.replace(edit, sublime.Region(0, view.size()), text)
 	while True:
 		line_region = view.line(view.size())
 		line = view.substr(line_region).strip()

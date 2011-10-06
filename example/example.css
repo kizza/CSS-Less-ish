@@ -3,54 +3,40 @@
 * Below are some examples of variables...
 *
 * @link-colour = '#0000FF'
+* @hover-colour = desaturate(#FF0000, .2)
+* @brighter = lighten (@link-colour ,  .9)
 * @background="#EEE"
 * @typography = "font-family:arial, serif; font-size:100%; "
 * @corners='border-radius: 10px; -webkit-border-radius: 10px; -mox-border-radius: 10px;'
 */
 
 	/* Structure */
-	body {
-		text-align: center;
-		@typography
-	}
+	body { text-align:center; font-family:arial, serif; font-size:100%; }
+	#content { margin:40px auto; text-align:left; width:800px; }
 
-	#content {
-		margin: 40px auto;
-		text-align: left;
-		width: 800px;
-	}
 
-	/* Default styles - with an inline quote here, @border-color = '#CCC' */
+	/* Default styles - with an inline quote here, #CCC = '#CCC' */
 	.box {
-		background: @background;
-		border: solid 1px @border-color;
+		background: #EEE;
+		border: solid 1px #CCC;
 		margin: 40px 0;
 		padding: 10px 20px;
-		@corners
+		border-radius: 10px; -webkit-border-radius: 10px; -mox-border-radius: 10px;
 	}
+	h1 { font-size:160%; @font }
+	a { color:#0000FF; }
+	a:hover { background:#e5e5ff; color:#cc2828; }
 
-	h1 {
-		font-size: 160%;
-		@font
-	}
-
-	a {
-		color: @link-colour;
-	}
 
 	/* Two examples styles using nestings (nb. square brackets) */
-	#bottom [
+	/*#bottom [*/
+		#bottom h1 { color:red; }
+		#bottom a { color:green; } /* nested rules can include square brackets as normal */
+		#bottom input[type="text"] { background:#EEE; }	
+	/*]*/
 
-		h1 {
-			color: red;
-		}
-		a {
-			color: green;
-		}
+	/*.box [*/
+		.box p { font-size:12px; }
+	/*]*/
 
-	]
-
-	#bottom .box [
-		p {font-size:12px;}
-	]
-
+/* Variables:link-colour{844:851}.border-color{611:615,676:680}.corners{724:799}.typography{455:496}.brighter{877:884}.background{650:654,1112:1116}.hover-colour{892:899} */

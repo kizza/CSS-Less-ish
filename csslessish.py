@@ -8,7 +8,7 @@ from modules import cssvariables, cssnesting
 class css_less_ish_compile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
-		#reload_modules()
+		reload_modules()
 		cssvariables.apply(view, edit)
 		cssnesting.apply(view, edit)
 		print "CSS Less(ish) Compiled"
@@ -16,11 +16,18 @@ class css_less_ish_compile_command(sublime_plugin.TextCommand):
 class css_less_ish_decompile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
-		#reload_modules()
+		reload_modules()
 		cssnesting.remove(view, edit)
 		cssvariables.remove(view, edit)
 		highlight(view)
 		print "CSS Less(ish) Decompiled"
+
+class css_less_ish_scope_command(sublime_plugin.TextCommand):
+	def run(self, edit):
+		view = self.view
+		regions = view.sel()
+		for region in regions:
+			print view.scope_name(region.a)
 
 #
 # Helpers
@@ -62,6 +69,7 @@ def get_setting(name, typeof=str):
 def reload_modules():
 	load_module('cssvariables')
 	load_module('cssnesting')
+	load_module('csscolours')
 
 # reload module (borrowed from sublimelint for ease when debugging)
 basedir = os.getcwd()

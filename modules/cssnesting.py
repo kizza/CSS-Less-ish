@@ -75,9 +75,10 @@ def strip_selector_from_groupings(view, edit):
 # This comments out "classname [" and closing "]" groupings (so they don't ruin the css for production)
 def comment_out_groupings(view, edit):
 	# openings...
-	matches = view.find_all('^( |\t)*'+ classname +'\s*\[')
+	matches = view.find_all('^( |\t)*'+ classname +'\s*\[\n')
 	matches = reversed(matches)
 	for region in (matches):
+		region = sublime.Region(region.a, region.b - 1)	# remove the trailing \n
 		text = view.substr(region)
 		stripped_text, left_gap_size = group_title_left_gap(view, text) # account for match including left padding
 		newregion = sublime.Region(region.a + left_gap_size, region.b)
