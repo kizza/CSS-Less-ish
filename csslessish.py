@@ -1,5 +1,6 @@
 import sys, os, sublime, sublime_plugin
 from modules import cssvariables, cssnesting
+import tests
 
 #
 # Text Commands
@@ -8,19 +9,19 @@ from modules import cssvariables, cssnesting
 class css_less_ish_compile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
-		reload_modules()
+		#reload_modules()
 		cssvariables.apply(view, edit)
 		cssnesting.apply(view, edit)
-		print "CSS Less(ish) Compiled"
+		#print "CSS Less(ish) Compiled"
 
 class css_less_ish_decompile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
-		reload_modules()
+		#reload_modules()
 		cssnesting.remove(view, edit)
 		cssvariables.remove(view, edit)
 		highlight(view)
-		print "CSS Less(ish) Decompiled"
+		#print "CSS Less(ish) Decompiled"
 
 class css_less_ish_scope_command(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -28,6 +29,12 @@ class css_less_ish_scope_command(sublime_plugin.TextCommand):
 		regions = view.sel()
 		for region in regions:
 			print view.scope_name(region.a)
+
+class css_less_ish_run_tests_command(sublime_plugin.TextCommand):
+	def run(self, edit):
+		#reload_modules()
+		#reload_modules()
+		tests.run(self.view, edit)
 
 #
 # Helpers
@@ -67,16 +74,21 @@ def get_setting(name, typeof=str):
 			return None
 
 def reload_modules():
-	load_module('cssvariables')
-	load_module('cssnesting')
-	load_module('csscolours')
-
+	load_module('modules.cssvariables')
+	load_module('modules.cssnesting')
+	load_module('modules.csscolours')
+	load_module('tests')
+	load_module('tests.testcase')
+	load_module('tests.testvariables')
+	load_module('tests.testnesting')
+	load_module('tests.testcolours')
+	
 # reload module (borrowed from sublimelint for ease when debugging)
 basedir = os.getcwd()
-def load_module(name):
-	path = 'modules.' + name
+def load_module(path):
 	os.chdir(basedir)
 	__import__(path)
+	#print "Reloading "+path
 	sys.modules[path] = reload(sys.modules[path])
 
 #

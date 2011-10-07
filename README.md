@@ -28,6 +28,21 @@ produces
     .header h1 { color:blue }
     .header a { color:blue }
 
+### CSS Colours
+
+You can use colour functions when declaring css variables including `lighten`, `darken`, `saturate`, and `desaturate`. You can pass existing variables as arguments too.
+
+    /* 
+    @base-colour = #336699
+    @link = lighten(@base-colour, 20%) 
+    */  
+    a { color: @link; }
+
+produces
+
+    a { color: #3d7ab7; }
+
+
 ### Read More
 
 You can [read more on the wiki](https://github.com/kizza/CSS-Less-ish/wiki).

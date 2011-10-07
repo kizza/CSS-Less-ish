@@ -2,20 +2,24 @@
 * This is an example of two features @variables within css, and css nesting.
 * Below are some examples of variables...
 *
-* @link-colour = '#0000FF'
-* @hover-colour = desaturate(#FF0000, .2)
-* @brighter = lighten (@link-colour ,  .9)
+* @link-colour = '#336699'
+* @hover-colour = desaturate(#FF0000, 20%)
+* @brighter = lighten (@link-colour ,  .2)
 * @background="#EEE"
 * @typography = "font-family:arial, serif; font-size:100%; "
 * @corners='border-radius: 10px; -webkit-border-radius: 10px; -mox-border-radius: 10px;'
 */
 
-	/* Structure */
+	/*  
+	* Structure 
+	*/
 	body { text-align:center; font-family:arial, serif; font-size:100%; }
 	#content { margin:40px auto; text-align:left; width:800px; }
 
 
-	/* Default styles - with an inline quote here, #CCC = '#CCC' */
+	/*  
+	* Default styles - with an inline quote here, #CCC = '#CCC' 
+	*/
 	.box {
 		background: #EEE;
 		border: solid 1px #CCC;
@@ -24,19 +28,21 @@
 		border-radius: 10px; -webkit-border-radius: 10px; -mox-border-radius: 10px;
 	}
 	h1 { font-size:160%; @font }
-	a { color:#0000FF; }
-	a:hover { background:#e5e5ff; color:#cc2828; }
+	a { color:#336699; }
+	a:hover { background:#3d7ab7; color:#cc2828; }
 
 
-	/* Two examples styles using nestings (nb. square brackets) */
+	/*  
+	* Two examples styles using nestings (nb. square brackets) 
+	*/
 	/*#bottom [*/
 		#bottom h1 { color:red; }
-		#bottom a { color:green; } /* nested rules can include square brackets as normal */
-		#bottom input[type="text"] { background:#EEE; }	
+		#bottom a { color:green; } 
+		#bottom input[type="text"] { background:#EEE; } /* Can have selectors with within nestings */
 	/*]*/
 
-	/*.box [*/
-		.box p { font-size:12px; }
+	/*#bottom .box [*/
+		#bottom .box p { font-size:12px; }
 	/*]*/
 
-/* Variables:link-colour{844:851}.border-color{611:615,676:680}.corners{724:799}.typography{455:496}.brighter{877:884}.background{650:654,1112:1116}.hover-colour{892:899} */
+/* Variables:link-colour{859:866}.border-color{624:628,691:695}.corners{739:814}.typography{463:504}.brighter{892:899}.background{665:669,1078:1082}.hover-colour{907:914} */

@@ -36,7 +36,9 @@ def group_title_left_gap(view, selector):
 
 # returns group selector and [...] as regions array
 def get_groups_regions(view):
-	return view.find_all('^( |\t)*'+ classname +'\s+?\[(.|\n)*?\}\s+\]')
+	#return view.find_all('^( |\t)*'+ classname +'\s+?\[(.|\n)*?\}\s+\]')
+	allowed_at_end = r'\s|\w|\/|\*'
+	return view.find_all(r'^( |\t)*'+ classname +r'\s+?\[(.|\n)*?\}('+ allowed_at_end +')*\n\s*\]')
 
 # splits entire group region into selector and rule contents
 def get_group_region_parts(text):

@@ -1,5 +1,6 @@
 import sublime
 import re
+import modules.csscolours as colour
 
 #
 # Primary functions
@@ -64,11 +65,11 @@ def calculate_value(value, d):
 		if varname in value:
 			value = value.replace('@'+varname, d[varname])
 	# look for function
-	match = re.search(r'(\w+)\s*?\((.*?)\s*?,\s*?(.*)\)', value)
+	match = re.search(r'(\w+)\s*?\((.*?),(.*)\)', value)
 	if match:
 		func = match.group(1)
-		var1 = match.group(2)
-		var2 = match.group(3)
+		var1 = match.group(2).strip()
+		var2 = match.group(3).strip()
 		if func in ('lighten', 'darken', 'saturate', 'desaturate'):
 			value = eval('colour.'+ func + '("' + var1 + '","' + var2 + '")')
 	return value

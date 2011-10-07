@@ -66,7 +66,8 @@ def hsv_to_hex(h, s, v):
 #
 
 def _format_percent(percent):
-	percent = float(percent.replace('%', ''))
+	if not isinstance(percent, float):
+		percent = float(percent.replace('%', ''))
 	if percent > 1:
 		percent = percent/100
 	#value = min(percent * value, 1)
