@@ -32,8 +32,8 @@ class css_less_ish_scope_command(sublime_plugin.TextCommand):
 
 class css_less_ish_run_tests_command(sublime_plugin.TextCommand):
 	def run(self, edit):
-		#reload_modules()
-		#reload_modules()
+		reload_modules()
+		reload_modules()
 		tests.run(self.view, edit)
 
 #
@@ -82,7 +82,7 @@ def reload_modules():
 	load_module('tests.testvariables')
 	load_module('tests.testnesting')
 	load_module('tests.testcolours')
-	
+
 # reload module (borrowed from sublimelint for ease when debugging)
 basedir = os.getcwd()
 def load_module(path):

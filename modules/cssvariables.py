@@ -7,6 +7,9 @@ import modules.csscolours as colour
 #
 
 def apply(view, edit):
+	cache = get_region_cache(view)
+	if cache:
+		return
 	remove_region_cache(view, edit)
 	trim_entire_content(view, edit)
 	append_region_cache(view, edit)
@@ -38,7 +41,7 @@ def get_css_variables_dict(view):
 
 	# match all @var = "value", or @var='value' or @var-name = 'value'
 	#matches = view.find_all("@(\w|-)+\s?+=\s?+(\"|\')[^(\"|\')]+(\"|\')",0) # this one only looks for quote marks
-	value = r"'|\"|#|\w|\(|\)|@|,| |%|\.|-|:|;" # variable "value" match
+	value = r"'|\"|#|\w|\(|\)|@|,| |%|\.|-|:|;|\+|\*|\/[^\/]" # variable "value" match
 	matches = view.find_all("@(\w|-)+\s?+=\s?+("+value+")+",0) 
 	d = {}
 	#print view.substr(matches)
@@ -64,6 +67,14 @@ def calculate_value(value, d):
 	for varname in d:
 		if varname in value:
 			value = value.replace('@'+varname, d[varname])
+	# look for numeric values (to do maths on them)
+	numeric = value.replace('px', '')
+	match = re.match(r'([0-9]| |\+|\-|\*)+', numeric)
+	if match:
+		try:
+			value = str(eval(numeric)) + 'px'
+		except:
+			pass
 	# look for function
 	match = re.search(r'(\w+)\s*?\((.*?),(.*)\)', value)
 	if match:
@@ -115,7 +126,10 @@ def append_region_cache(view, edit):
 		pos[varname] = []
 	while match:
 		varname = view.substr(match).replace('@', '')
+		#scope_name = view.scope_name(match.a)
+		#print varname + '- ' + scope_name
 		if varname in variables:
+			# and not 'comment' in scope_name:
 			value = variables[varname]
 			view.replace(edit, match, value)
 			offset = match.a + len(value)
