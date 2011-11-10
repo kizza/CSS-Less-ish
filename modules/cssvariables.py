@@ -42,7 +42,7 @@ def get_css_variables_dict(view):
 	# match all @var = "value", or @var='value' or @var-name = 'value'
 	#matches = view.find_all("@(\w|-)+\s?+=\s?+(\"|\')[^(\"|\')]+(\"|\')",0) # this one only looks for quote marks
 	value = r"'|\"|#|\w|\(|\)|@|,| |%|\.|-|:|;|\+|\*|\/[^\/]" # variable "value" match
-	matches = view.find_all("@(\w|-)+\s?+=\s?+("+value+")+",0) 
+	matches = view.find_all("@(\w|-)+?(\s+)?=\s?+("+value+")+",0) 
 	d = {}
 	#print view.substr(matches)
 	for match in matches:
@@ -50,7 +50,7 @@ def get_css_variables_dict(view):
 		text = view.substr(match)
 		varname,value = text.split("=")
 		# format variable name text
-		varname = varname.replace('@', '').strip()	
+		varname = varname.replace('@', '').strip()
 		# format value text
 		value = value.replace('\"', '').replace("\'", '').strip()
 		# add to dictionary
@@ -126,9 +126,8 @@ def append_region_cache(view, edit):
 		pos[varname] = []
 	while match:
 		varname = view.substr(match).replace('@', '')
-		#scope_name = view.scope_name(match.a)
-		#print varname + '- ' + scope_name
-		if varname in variables:
+		scope_name = view.scope_name(match.a)
+		if varname in variables and scope_name.find('comment')==-1:
 			# and not 'comment' in scope_name:
 			value = variables[varname]
 			view.replace(edit, match, value)

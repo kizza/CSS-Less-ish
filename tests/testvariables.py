@@ -39,7 +39,7 @@ class TestVariables(testcase.TestCase):
 * @var2 ='val2'
 * @var3= val3 
 * @var4 =  @var1 // Variable reference
-* @var5 =  /../../path // Path with comment too
+* @var5    	=  /../../path // Path with comment too
 */
 
 h1 { colour1: @var1;/* comment */}
@@ -63,3 +63,4 @@ img{src:@var5;}
 div {width: @var4; height: @var5;}
 
 """
+
