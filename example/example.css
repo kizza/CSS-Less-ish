@@ -8,6 +8,7 @@
 * @background="#EEE"
 * @typography = "font-family:arial, serif; font-size:100%; "
 * @corners='border-radius: 10px; -webkit-border-radius: 10px; -mox-border-radius: 10px;'
+*
 */
 
 	/*  
@@ -16,9 +17,8 @@
 	body { text-align:center; font-family:arial, serif; font-size:100%; }
 	#content { margin:40px auto; text-align:left; width:800px; }
 
-
 	/*  
-	* Default styles - with an inline quote here, #CCC = '#CCC' 
+	* Default styles - with an inline quote here, @border-color = '#CCC' 
 	*/
 	.box {
 		background: #EEE;
@@ -27,7 +27,7 @@
 		padding: 10px 20px;
 		border-radius: 10px; -webkit-border-radius: 10px; -mox-border-radius: 10px;
 	}
-	h1 { font-size:160%; @font }
+	h1 { font-size:160%; }
 	a { color:#336699; }
 	a:hover { background:#3d7ab7; color:#cc2828; }
 
@@ -45,4 +45,4 @@
 		#bottom .box p { font-size:12px; }
 	/*]*/
 
-/* Variables:link-colour{859:866}.border-color{624:628,691:695}.corners{739:814}.typography{463:504}.brighter{892:899}.background{665:669,1078:1082}.hover-colour{907:914} */
+/* Variables:link-colour{863:870}.border-color{701:705}.corners{749:824}.typography{465:506}.brighter{896:903}.background{675:679,1082:1086}.hover-colour{911:918} */

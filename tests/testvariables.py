@@ -13,6 +13,9 @@ class TestVariables(testcase.TestCase):
 		self.variable_equals('var3', 'val3')
 		self.variable_equals('var4', 'val1')	# referenced
 		self.variable_equals('var5', '/../../path')
+		# Tricky stuff
+		self.variable_equals('filter', "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 );")
+		self.variable_equals('filter2', 'filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#ffffff", endColorstr="#f6f6f6",GradientType=0 )')
 		# check variables have been swapped in
 		self.find('colour1: val1;')
 		self.find('colour2: val2;')
@@ -40,6 +43,8 @@ class TestVariables(testcase.TestCase):
 * @var3= val3 
 * @var4 =  @var1 // Variable reference
 * @var5    	=  /../../path // Path with comment too
+* @filter  = filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 );
+* @filter2  = filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#ffffff", endColorstr="#f6f6f6",GradientType=0 )
 */
 
 h1 { colour1: @var1;/* comment */}

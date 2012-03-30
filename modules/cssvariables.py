@@ -41,20 +41,25 @@ def get_css_variables_dict(view):
 
 	# match all @var = "value", or @var='value' or @var-name = 'value'
 	#matches = view.find_all("@(\w|-)+\s?+=\s?+(\"|\')[^(\"|\')]+(\"|\')",0) # this one only looks for quote marks
-	value = r"'|\"|#|\w|\(|\)|@|,| |%|\.|-|:|;|\+|\*|\/[^\/]" # variable "value" match
+	value = r"'|\"|#|\w|\(|\)|@|,| |=|%|\.|-|:|;|\+|\*|\/[^\/]" # variable "value" match
 	matches = view.find_all("@(\w|-)+?(\s+)?=\s?+("+value+")+",0) 
 	d = {}
 	#print view.substr(matches)
 	for match in matches:
 		# grab the actual text matched @var = "val" and split up
 		text = view.substr(match)
-		varname,value = text.split("=")
+		varname,value = text.split("=", 1)
 		# format variable name text
 		varname = varname.replace('@', '').strip()
 		# format value text
-		value = value.replace('\"', '').replace("\'", '').strip()
+		value = value.strip()
+		if value.endswith('"') or value.endswith("\'"): # previously removed all " and ' chars - now just strip them from the front and end
+			value = value[:-1]
+		if value.startswith('"') or value.startswith("\'"): 
+			value = value[1:]
+		# value = value.replace('\"', '').replace("\'", '').strip()
 		# add to dictionary
-		d[varname] = value
+		d[varname] = value.strip()
 	# calculate values
 	for varname in d:
 		value = d[varname]
