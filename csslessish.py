@@ -104,7 +104,8 @@ class cssvariables_plugin(sublime_plugin.EventListener):
 		process(view, 'restore')	
 
 def process(view, type):
-	if view.file_name().endswith('.css'):
+	filename = view.file_name()
+	if filename and filename.endswith('.css'):
 		# Only process if there are variables or nestings
 		if not view.find("@\w+", 0) and not view.find("\w+\s*\[", 0):
 			return
