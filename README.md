@@ -2,7 +2,7 @@
 
 A [Sublime Text 2 & 3](http://www.sublimetext.com) plugin that implements a stripped down version of the functionality in css preprocessors (such as [LESS](http://lesscss.org)) so that you can use css variables and nesting without any effort.
 
-![demo](http://imgur.com/03V7JGy)
+![demo](http://imgur.com/03V7JGy.gif)
 
 ### CSS Variables
 
