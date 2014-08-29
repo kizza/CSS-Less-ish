@@ -1,4 +1,8 @@
-import testcase
+import sys
+if sys.version_info < (3, 0):
+	import testcase
+else:
+	from . import testcase
 
 class TestNesting(testcase.TestCase):
 
@@ -18,6 +22,10 @@ class TestNesting(testcase.TestCase):
 		h1 {}
 		.title {} /* Comment */
 	]
+
+	.header [
+		h1, h2, h3 { text-decoration:underline; }
+	]
 """
 
 	def result(self):
@@ -25,5 +33,9 @@ class TestNesting(testcase.TestCase):
 	/*.header [*/
 		.header h1 {}
 		.header .title {} /* Comment */
+	/*]*/
+
+	/*.header [*/
+		.header h1, .header h2, .header h3 { text-decoration:underline; }
 	/*]*/
 """

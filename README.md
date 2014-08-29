@@ -1,36 +1,37 @@
 # CSS Less(ish)
 
-This is a [SublimeText 2](http://www.sublimetext.com/2) plugin that facilitates a very very stripped down version of the functionality in LESS css. ([http://lesscss.org](http://lesscss.org))
+A [Sublime Text 2 & 3](http://www.sublimetext.com) plugin that implements a stripped down version of the functionality in css preprocessors (such as [LESS](http://lesscss.org)) so that you can use css variables and nesting without any effort.
+
+![demo](http://imgur.com/03V7JGy)
 
 ### CSS Variables
 
-You can store variables within comments using the "@" symbol, then use them anywhere within your css.
+Store variables within comments using the "@" symbol, then use them anywhere within your css.
 
-    /* @link = "#FF0000" */  
-    a { color: @link; }`
+    /* @link = #6699CC */  
+    a { color: @link; }
 
 produces
 
-    /* @link = "#FF0000" */
-    a { color: #FF0000; }
+    a { color: #6699CC; }
 
 ### CSS Nesting
 
-You can nest styles within other blocks to append that selector to all children.
+Nest styles within other blocks to append that selector to all children.
 
-    .header [
+    header [
         h1 { color:blue }
         a { color:blue }
     ]
 
 produces
 
-    .header h1 { color:blue }
-    .header a { color:blue }
+    header h1 { color:blue }
+    header a { color:blue }
 
 ### CSS Colours
 
-You can use colour functions when declaring css variables including `lighten`, `darken`, `saturate`, and `desaturate`. You can pass existing variables as arguments too.
+Use colour functions when declaring css variables including `lighten`, `darken`, `saturate`, and `desaturate`. You can pass existing variables as arguments too.
 
     /* 
     @base-colour = #336699
@@ -42,6 +43,19 @@ produces
 
     a { color: #3d7ab7; }
 
+### CSS Maths
+
+You can add and multiply numeric variables too (works with px, em or %)
+
+    /* 
+    @padding = 1em
+    @width = 10em + 2 * @padding
+    */  
+    div { width: @width; }
+
+produces
+
+    div { width: 12em; }
 
 ### Read More
 

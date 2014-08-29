@@ -1,0 +1,1 @@
+To run this test suite open the command palette (Ctrl + Shift + P) to execute the command "CSS Less-ish: Run Tests"

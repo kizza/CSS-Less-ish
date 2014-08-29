@@ -1,0 +1,17 @@
+CSS Less(ish)
+===============================
+
+This plugin implements a stripped down version of the functionality in css 
+preprocessors so that you can use css variables and nesting without any effort.
+
+
+How to use it
+-------------------------------
+By simply activating this plugin you're all set!
+
+
+Thank you
+-------------------------------
+I hope you enjoy using this plugin - and that it saves you some time too!
+You can learn more or get in contact at https://github.com/kizza/CSS-Less-ish
+

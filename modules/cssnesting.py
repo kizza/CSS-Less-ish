@@ -36,15 +36,14 @@ def group_title_left_gap(view, selector):
 
 # returns group selector and [...] as regions array
 def get_groups_regions(view):
-	#return view.find_all('^( |\t)*'+ classname +'\s+?\[(.|\n)*?\}\s+\]')
 	allowed_at_end = r'\s|\w|\/|\*'
 	return view.find_all(r'^( |\t)*'+ classname +r'\s+?\[(.|\n)*?\}('+ allowed_at_end +')*\n\s*\]')
 
 # splits entire group region into selector and rule contents
 def get_group_region_parts(text):
 	text = text.rstrip()
-	selector = text[0:text.find('[')]
-	contents = text[text.find('['):len(text)]
+	selector = text[0:text.find('[')]	 		# .selector
+	contents = text[text.find('['):len(text)] # [ contents ]
 	return selector, contents
 
 #
@@ -58,8 +57,23 @@ def append_selector_to_groupings(view, edit):
 	for region in (matches):
 		# Get the selector and rule contents
 		selector, contents = get_group_region_parts( view.substr(region) )
+		
+		# New approach for handling coma seperated selectors
+		class_pattern = r'('+ classname + ')(\s*?\{(.|\n)*?\})'
+		front = ''
+		for body in re.findall(class_pattern, contents):
+			bits = body[0].split(',')
+			front = ''#selector.strip() + ' '
+			for bit in bits:
+				if (front != ''):
+					front+= ', '
+				front+= selector.strip() + ' ' + bit.strip()
+			contents = contents.replace(body[0], front + ' ')
+
+		# Below is previous cleaner approach for regex
 		# put group selector on each sub selector
-		contents = re.sub('('+classname + ')(\s*?\{(.|\n)*?\})', selector.strip() +' \\1\\3', contents)
+		#contents = re.sub('('+ classname +')(\s*?\{(.|\n)*?\})', selector.strip() +' \\1\\3', contents)
+		
 		# replace entire selection with fixed bit
 		view.replace(edit, sublime.Region(region.a, region.b), selector + contents)
 

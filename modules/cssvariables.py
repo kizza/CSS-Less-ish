@@ -1,6 +1,8 @@
-import sublime
-import re
-import modules.csscolours as colour
+import sys, sublime, re
+if sys.version_info < (3, 0):
+	import modules.csscolours as colour
+else:
+	from . import csscolours as colour
 
 #
 # Primary functions
@@ -73,11 +75,18 @@ def calculate_value(value, d):
 		if varname in value:
 			value = value.replace('@'+varname, d[varname])
 	# look for numeric values (to do maths on them)
-	numeric = value.replace('px', '')
+	metric = ''
+	if 'px' in value:
+		metric = 'px'
+	elif 'em' in value:
+		metric = 'em'
+	elif '%' in value:
+		metric = '%'
+	numeric = value.replace(metric, '')
 	match = re.match(r'([0-9]| |\+|\-|\*)+', numeric)
 	if match:
 		try:
-			value = str(eval(numeric)) + 'px'
+			value = str(eval(numeric)) + metric
 		except:
 			pass
 	# look for function
@@ -120,7 +129,7 @@ def append_region_cache(view, edit):
 	variables = get_css_variables_dict(view)
 	docblock = get_first_comment(view)
 	if not docblock:
-		print "No first comment found"
+		#print "No first comment found"
 		return
 	# Loop through region matches (outside of the docblock)
 	offset = docblock.b

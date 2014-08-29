@@ -1,4 +1,4 @@
-The initial example.css file is untouched by this plugin - and as a result doesn not render correctly for example.html
+The initial example.css file is untouched by this plugin - and as a result does not render correctly for example.html
 
 When this plugin is enabled open example.css and simply save the file, and the css will be "compiled" down implementing variables and nesting within the styles.
 

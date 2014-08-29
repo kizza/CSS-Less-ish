@@ -1,5 +1,11 @@
-import testcase
-import modules.csscolours as colour
+import sys
+if sys.version_info < (3, 0):
+	import testcase
+	import modules.csscolours as colour
+else:
+	from . import testcase
+	from ..modules import csscolours as colour
+
 
 class TestColours(testcase.TestCase):
 

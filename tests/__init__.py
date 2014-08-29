@@ -1,10 +1,17 @@
-import sublime
-from tests.testvariables import TestVariables
-from tests.testnesting import TestNesting
-from tests.testcolours import TestColours
+import sys, sublime
+if sys.version_info < (3, 0):
+	from tests.testvariables import TestVariables
+	from tests.testnesting import TestNesting
+	from tests.testcolours import TestColours
+else:
+	from .testvariables import TestVariables
+	from .testnesting import TestNesting
+	from .testcolours import TestColours
+
 
 def run(view, edit):
-	view, edit = create_new_view(view)
+	#view, edit = create_new_view(view)
+	view = create_new_view(view)
 	output = "CSS LESS(ish) UNIT TESTS\n" + "=" * 50 + "\n"
 	tests = [
 		TestVariables(view, edit), 
@@ -31,7 +38,13 @@ def highlight(view):
 		line = view.line(region)
 		if view.substr(line).find('(') > 0 and view.rowcol(line.a)[0] > 0:
 			add.append(region)
-	view.add_regions('css-less-ish-error', add, 'storage', sublime.DRAW_EMPTY) # sublime.DRAW_OUTLINED if outline else 
+	if sys.version_info < (3, 0):
+		view.add_regions('css-less-ish-error', add, 'storage', sublime.DRAW_EMPTY) # sublime.DRAW_OUTLINED if outline else 
+	else:
+		view.add_regions('css-less-ish-error', add, 'storage', '', sublime.DRAW_NO_OUTLINE) # sublime.DRAW_OUTLINED if outline else 
+		
+
+	
 	#callback = lambda: unhighlight(view)
 	#sublime.set_timeout(callback, 1000)
 					
@@ -42,8 +55,8 @@ def unhighlight(view):
 def create_new_view(view):
 	view = sublime.active_window().new_file()
 	#view.set_syntax_file('Packages/CSS/CSS.tmLanguage')
-	edit = view.begin_edit()
-	return view, edit
+	#edit = view.begin_edit()
+	return view#, edit
 
 def close_view(view, edit):
 	view.end_edit(edit)

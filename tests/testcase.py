@@ -1,6 +1,8 @@
-import sublime
-import inspect
-from modules import cssvariables 
+import sys, sublime, inspect
+if sys.version_info < (3, 0):
+	from modules import cssvariables
+else:
+	from ..modules import cssvariables
 
 class TestCase():
 

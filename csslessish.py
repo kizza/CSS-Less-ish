@@ -1,6 +1,15 @@
+from __future__ import print_function
 import sys, os, sublime, sublime_plugin
-from modules import cssvariables, cssnesting
-import tests
+if sys.version_info < (3, 0):
+	from modules import cssvariables, cssnesting
+	import tests
+else:
+	from .modules import cssvariables, cssnesting
+	from . import tests
+
+
+def plugin_loaded():
+    """The ST3 entry point for plugins."""
 
 #
 # Text Commands
@@ -9,26 +18,22 @@ import tests
 class css_less_ish_compile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
-		#reload_modules()
 		cssvariables.apply(view, edit)
 		cssnesting.apply(view, edit)
-		#print "CSS Less(ish) Compiled"
 
 class css_less_ish_decompile_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
-		#reload_modules()
 		cssnesting.remove(view, edit)
 		cssvariables.remove(view, edit)
 		highlight(view)
-		#print "CSS Less(ish) Decompiled"
 
 class css_less_ish_scope_command(sublime_plugin.TextCommand):
 	def run(self, edit):
 		view = self.view
 		regions = view.sel()
 		for region in regions:
-			print view.scope_name(region.a)
+			print(view.scope_name(region.a))
 
 class css_less_ish_run_tests_command(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -51,8 +56,11 @@ def highlight(view):
 def highlight_module(view, name, regions):
 	colour = get_setting(name + '_highlight_scope', str)
 	outline = get_setting(name + '_highlight_outline', bool)
-	view.add_regions('css-less-ish-'+name, regions, colour, sublime.DRAW_OUTLINED if outline else sublime.DRAW_EMPTY)
-
+	if sys.version_info < (3, 0):
+		view.add_regions('css-less-ish-'+name, regions, colour, sublime.DRAW_OUTLINED if outline else sublime.DRAW_EMPTY)
+	else:
+		view.add_regions('css-less-ish-'+name, regions, colour, '', sublime.DRAW_NO_FILL if outline else sublime.DRAW_NO_OUTLINE)
+		
 def unhighlight(view):
 	view.erase_regions('css-less-ish-variables')
 	view.erase_regions('css-less-ish-nesting')
@@ -74,6 +82,10 @@ def get_setting(name, typeof=str):
 			return None
 
 def reload_modules():
+	if sys.version_info < (3, 0):
+	 	pass
+	else:
+	 	return
 	load_module('modules.cssvariables')
 	load_module('modules.cssnesting')
 	load_module('modules.csscolours')
@@ -87,8 +99,8 @@ def reload_modules():
 basedir = os.getcwd()
 def load_module(path):
 	os.chdir(basedir)
+	print("--Reloading "+path)
 	__import__(path)
-	#print "Reloading "+path
 	sys.modules[path] = reload(sys.modules[path])
 
 #
@@ -111,7 +123,7 @@ def process(view, type):
 			return
 		if type=='restore':
 			restore_delay = get_setting('restore_delay', int)
-			if restore_delay > 0:
+			if restore_delay and restore_delay > 0:
 				callback = lambda: restore(view)
 				sublime.set_timeout(callback, restore_delay)
 			else:
