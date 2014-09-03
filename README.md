@@ -57,6 +57,16 @@ produces
 
     div { width: 12em; }
 
+### How does it work?
+
+The plugin doesn't require any third party libraries or tools to be installed - in fact it's not really a css preprocessor at all.
+
+When you save a css file using the features above the plugin instantly compiles down the output "pre save", writes it to disk, then restores your original css (all without you seeing it).
+
+### Why?
+
+CSS proprocessors are wonderfully powerful, but I wanted to be able to use the essential functionality they provide simply and without any effort.  The other advantage is that when debugging, your css styles are traced back to the original source document (since your css smarts comes from the file itself rather than being compiled into a separate file)
+
 ### Read More
 
 You can [read more on the wiki](https://github.com/kizza/CSS-Less-ish/wiki).
