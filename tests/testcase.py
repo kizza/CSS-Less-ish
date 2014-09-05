@@ -77,7 +77,7 @@ class TestCase():
 	def text_equals(self, sent):
 		text = self.view.substr(sublime.Region(0, self.view.size()))
 		if text.strip() != sent.strip():
-			self.error( 'text_equals' )
+			self.error( 'Text not equal')# : From...'+"\n"+text + "\nto...\n"+sent )
 		else:
 			self.ok()
 

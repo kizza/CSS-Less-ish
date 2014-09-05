@@ -1,8 +1,10 @@
 import sys, sublime, re
 if sys.version_info < (3, 0):
 	import modules.csscolours as colour
+	import modules.cssfuncs as funcs
 else:
 	from . import csscolours as colour
+	from . import cssfuncs as funcs
 
 #
 # Primary functions
@@ -83,13 +85,24 @@ def calculate_value(value, d):
 	elif '%' in value:
 		metric = '%'
 	numeric = value.replace(metric, '')
-	match = re.match(r'([0-9]| |\+|\-|\*)+', numeric)
+	match   = re.match(r'([0-9]| |\+|\-|\*)+', numeric)
 	if match:
 		try:
 			value = str(eval(numeric)) + metric
+			return value
 		except:
 			pass
-	# look for function
+
+	# look for css function
+	match = re.search(r'((\w|-)+)\s*?\((.+)\)', value)
+	if match:
+		func = match.group(1)
+		var  = match.group(3).strip()
+		if func in ('box-shadow', 'linear-gradient', 'transition', 'transform'):
+			value = eval('funcs.'+ func.replace('-', '_') + '("' + var + '")')
+			return value
+
+	# look for colour function
 	match = re.search(r'(\w+)\s*?\((.*?),(.*)\)', value)
 	if match:
 		func = match.group(1)
@@ -98,6 +111,7 @@ def calculate_value(value, d):
 		if func in ('lighten', 'darken', 'saturate', 'desaturate'):
 			value = eval('colour.'+ func + '("' + var1 + '","' + var2 + '")')
 	return value
+
 
 def get_first_comment(view):
 	return view.find(r"\/\*+(\*|\w|\W)*?\*\/",0)  # better

@@ -11,6 +11,23 @@ else:
 def plugin_loaded():
     """The ST3 entry point for plugins."""
 
+
+#
+# Global 
+#
+is_running = False
+def is_finished():
+	global is_running
+	return not is_running
+
+def mark_as_running():
+	global is_running
+	is_running = True
+
+def mark_as_finished():
+	global is_running
+	is_running = False
+
 #
 # Text Commands
 #
@@ -64,6 +81,7 @@ def highlight_module(view, name, regions):
 def unhighlight(view):
 	view.erase_regions('css-less-ish-variables')
 	view.erase_regions('css-less-ish-nesting')
+	mark_as_finished()
 
 def get_setting(name, typeof=str):
 	settings = sublime.load_settings('csslessish.sublime-settings')
@@ -81,6 +99,10 @@ def get_setting(name, typeof=str):
 		else:
 			return None
 
+def save_setting(name, value):
+	settings = sublime.load_settings('csslessish.sublime-settings')
+	settings.set(name, value)
+
 def reload_modules():
 	if sys.version_info < (3, 0):
 	 	pass
@@ -89,11 +111,13 @@ def reload_modules():
 	load_module('modules.cssvariables')
 	load_module('modules.cssnesting')
 	load_module('modules.csscolours')
+	load_module('modules.cssfuncs')
 	load_module('tests')
 	load_module('tests.testcase')
 	load_module('tests.testvariables')
 	load_module('tests.testnesting')
 	load_module('tests.testcolours')
+	load_module('tests.testfuncs')
 
 # reload module (borrowed from sublimelint for ease when debugging)
 basedir = os.getcwd()
@@ -111,9 +135,14 @@ class cssvariables_plugin(sublime_plugin.EventListener):
 	def on_load(self, view):
 		process(view, 'restore')		
 	def on_pre_save(self, view):
+		view.set_status('css-compile', 'Compiling css(ish)...')
 		process(view, 'strip')		
 	def on_post_save(self, view):
-		process(view, 'restore')	
+		process(view, 'restore')
+		view.erase_status('css-compile')
+	def on_modified(self, view):
+		if is_finished():
+			view.set_scratch(False) # display as non-scratch view
 
 def process(view, type):
 	filename = view.file_name()
@@ -121,6 +150,9 @@ def process(view, type):
 		# Only process if there are variables or nestings
 		if not view.find("@\w+", 0) and not view.find("\w+\s*\[", 0):
 			return
+		# Handle the buffer scratching
+		mark_as_running()
+		view.set_scratch(True)
 		if type=='restore':
 			restore_delay = get_setting('restore_delay', int)
 			if restore_delay and restore_delay > 0:
@@ -130,6 +162,7 @@ def process(view, type):
 				restore(view)
 		else:
 			view.run_command('css_less_ish_compile')
+			
 
 def restore(view):
 	view.run_command('css_less_ish_decompile')

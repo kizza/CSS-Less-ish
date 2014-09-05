@@ -26,7 +26,7 @@ def highlights(view):
 # Helper functions
 #
 
-classname = '(\w|#|\.|:| |-|,|\*|\+|\"|\'|\=|\[|\]|>)+'
+classname = r'(\w|#|\.|:| |-|,|\*|\+|\"|\'|\=|\[|\]|>|\(|\))+'
 
 def group_title_left_gap(view, selector):
 	tab_size = int(view.settings().get('tab_size', 8))

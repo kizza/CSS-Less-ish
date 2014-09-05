@@ -3,20 +3,24 @@ if sys.version_info < (3, 0):
 	from tests.testvariables import TestVariables
 	from tests.testnesting import TestNesting
 	from tests.testcolours import TestColours
+	from tests.testfuncs import TestFunctions
 else:
 	from .testvariables import TestVariables
 	from .testnesting import TestNesting
 	from .testcolours import TestColours
+	from .testfuncs import TestFunctions
 
 
 def run(view, edit):
 	#view, edit = create_new_view(view)
 	view = create_new_view(view)
-	output = "CSS LESS(ish) UNIT TESTS\n" + "=" * 50 + "\n"
+	view.set_scratch(True)
+	output = "CSS Less(ish) Unit Tests\n" + "=" * 50 + "\n"
 	tests = [
 		TestVariables(view, edit), 
 		TestNesting(view, edit), 
-		TestColours(view, edit)
+		TestColours(view, edit),
+		TestFunctions(view, edit)
 		]
 	for test in tests:
 		output+= get_test_output( test )
@@ -59,7 +63,8 @@ def create_new_view(view):
 	return view#, edit
 
 def close_view(view, edit):
-	view.end_edit(edit)
+	#view.end_edit(edit)
+	pass
 
 def get_test_output(test):
 	output = test.setup()

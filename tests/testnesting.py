@@ -25,6 +25,9 @@ class TestNesting(testcase.TestCase):
 
 	.header [
 		h1, h2, h3 { text-decoration:underline; }
+		dl.the-item:nth-child(3n+1) > a {
+			border:solid 2px green;
+		}
 	]
 """
 
@@ -37,5 +40,8 @@ class TestNesting(testcase.TestCase):
 
 	/*.header [*/
 		.header h1, .header h2, .header h3 { text-decoration:underline; }
+		.header dl.the-item:nth-child(3n+1) > a {
+			border:solid 2px green;
+		}
 	/*]*/
 """
