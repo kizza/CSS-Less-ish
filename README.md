@@ -4,7 +4,8 @@ A [Sublime Text 2 & 3](http://www.sublimetext.com) plugin that implements a stri
 
 ![demo](http://imgur.com/03V7JGy.gif)
 
-### CSS Variables
+
+## CSS Variables
 
 Store variables within comments using the "@" symbol, then use them anywhere within your css.
 
@@ -15,7 +16,8 @@ produces
 
     a { color: #6699CC; }
 
-### CSS Nesting
+
+## CSS Nesting
 
 Nest styles within other blocks to append that selector to all children.
 
@@ -29,7 +31,8 @@ produces
     header h1 { color:blue }
     header a { color:blue }
 
-### CSS Colours
+
+## CSS Colours
 
 Use colour functions when declaring css variables including `lighten`, `darken`, `saturate`, and `desaturate`. You can pass existing variables as arguments too.
 
@@ -43,7 +46,46 @@ produces
 
     a { color: #3d7ab7; }
 
-### CSS Maths
+
+## CSS Functions
+
+Several css shortcuts functions are available including `transition`, `transform`, `box-shadow`, and `linear-gradient`. (These reference http://caniuse.com for browser specific rules)
+
+```
+/* 
+@transition   = transition(all 0.3s ease)
+@transform    = transform(rotate(0.6deg))
+@shadow       = box-shadow(0 0 0.4em #000)
+@gradient     = linear-gradient(#fff, #ddd)
+*/  
+div { 
+	@transition; 
+	@transform;
+	@shadow;
+	@gradient;
+}
+```
+
+produces
+
+```
+div { 
+	-webkit-transition: all 0.3s ease;
+	        transition: all 0.3s ease;
+
+	-webkit-transform: rotate(0.6deg);
+	    -ms-transform: rotate(0.6deg);
+	        transform: rotate(0.6deg);
+
+	-webkit-box-shadow: 0 0 0.4em #000;
+	        box-shadow: 0 0 0.4em #000; 
+
+	background-image: -webkit-linear-gradient(bottom, #fff, #ddd);
+	background-image: linear-gradient(to top, #fff, #ddd);
+}
+```
+
+## CSS Maths
 
 You can add and multiply numeric variables too (works with px, em or %)
 
@@ -57,16 +99,19 @@ produces
 
     div { width: 12em; }
 
-### How does it work?
+
+## How does it work?
 
 The plugin doesn't require any third party libraries or tools to be installed - in fact it's not really a css preprocessor at all.
 
 When you save a css file using the features above the plugin instantly compiles down the output "pre save", writes it to disk, then restores your original css (all without you seeing it).
 
-### Why?
+
+## Why?
 
 CSS proprocessors are wonderfully powerful, but I wanted to be able to use the essential functionality they provide simply and without any effort.  The other advantage is that when debugging, your css styles are traced back to the original source document (since your css smarts comes from the file itself rather than being compiled into a separate file)
 
-### Read More
+
+## Read More
 
 You can [read more on the wiki](https://github.com/kizza/CSS-Less-ish/wiki).

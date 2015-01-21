@@ -32,6 +32,11 @@ class TestVariables(testcase.TestCase):
 		self.find('colour3: @var3;')
 		self.find('colour4: @var4;')
 
+	def test_bugs(self):
+		self.set_text( self.bugs_text() )
+		self.compile()
+		self.variable_equals('inline', '#6699CC')
+
 	def test_numeric_variables(self):
 		self.set_text( self.numeric_variables_text() )
 		self.compile()
@@ -63,6 +68,12 @@ h3 { colour3: @var3;}
 h4 { colour4: @var4;}
 img{src:@var5;}
 
+"""
+
+	def bugs_text(self):
+		return """
+/* @inline = #6699CC */ 
+a { color: @inline }
 """
 
 	def numeric_variables_text(self):

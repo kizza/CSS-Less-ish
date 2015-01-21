@@ -56,6 +56,7 @@ def get_css_variables_dict(view):
 		# format variable name text
 		varname = varname.replace('@', '').strip()
 		# format value text
+		value = value.replace('*/', '')
 		value = value.strip()
 		if value.endswith('"') or value.endswith("\'"): # previously removed all " and ' chars - now just strip them from the front and end
 			value = value[:-1]
