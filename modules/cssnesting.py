@@ -57,7 +57,7 @@ def append_selector_to_groupings(view, edit):
 	for region in (matches):
 		# Get the selector and rule contents
 		selector, contents = get_group_region_parts( view.substr(region) )
-		
+
 		# New approach for handling coma seperated selectors
 		class_pattern = r'('+ classname + ')(\s*?\{(.|\n)*?\})'
 		front = ''
@@ -73,7 +73,7 @@ def append_selector_to_groupings(view, edit):
 		# Below is previous cleaner approach for regex
 		# put group selector on each sub selector
 		#contents = re.sub('('+ classname +')(\s*?\{(.|\n)*?\})', selector.strip() +' \\1\\3', contents)
-		
+
 		# replace entire selection with fixed bit
 		view.replace(edit, sublime.Region(region.a, region.b), selector + contents)
 
